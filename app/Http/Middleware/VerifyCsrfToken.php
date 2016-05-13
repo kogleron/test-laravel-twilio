@@ -12,6 +12,8 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        //
+        'api/voice-url',
+        'api/status-callback',
+        'api/sms-url',
     ];
 }
