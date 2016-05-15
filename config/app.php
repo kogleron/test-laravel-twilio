@@ -158,6 +158,7 @@ return [
 
         App\Providers\TwilioAppServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class
     ],
 
     /*
