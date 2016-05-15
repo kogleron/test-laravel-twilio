@@ -15,37 +15,41 @@ class ApiTest extends TestCase
             'To'         => 'to'
         ]);
 
-        $this->assertTrue($response->isOk());
         $this->assertTrue((bool)strpos($response->getContent(), env('TWILIO_DIAL_NUMBER')));
     }
 
     public function testStatusCallback()
     {
         $call              = new \App\CallsLog();
-        $call->call_sid    = 'call-sid';
+        $call->call_sid    = 'call-sid-' . time();
         $call->account_sid = 'account-sid';
         $call->from        = 'from';
         $call->to          = 'to';
         $call->save();
 
-        $response = $this->call('POST', 'api/status-callback', [
-            'CallSid'      => 'call-sid',
+        $this->call('POST', 'api/status-callback', [
+            'CallSid'      => $call->call_sid,
             'CallDuration' => '30'
         ]);
 
-        $this->assertTrue($response->isOk());
+        /** @var \App\CallsLog $call */
+        $call = \App\CallsLog::find($call->id);
+
+        $this->assertEquals('30', $call->duration);
     }
 
     public function testSmsUrl()
     {
-        $response = $this->call('POST', 'api/sms-url', [
-            'MessageSid' => 'MessageSid',
+        $messageSid = 'MessageSid' + time();
+
+        $this->call('POST', 'api/sms-url', [
+            'MessageSid' => $messageSid,
             'AccountSid' => 'AccountSid',
             'From'       => 'From',
             'To'         => 'To',
             'Body'       => 'Body',
         ]);
 
-        $this->assertTrue($response->isOk());
+        $this->assertTrue(true, !empty(\App\MessagesLog::where('message_sid', $messageSid)->firstOrFail()));
     }
 }
