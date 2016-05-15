@@ -6,14 +6,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ApiTest extends TestCase
 {
-    public function testCountries()
-    {
-        $response = $this->call('GET', 'api/countries');
-
-        $this->assertTrue($response->isOk());
-        $this->assertTrue(count(json_decode($response->getContent())) > 0);
-    }
-
     public function testVoiceUrl()
     {
         $response = $this->call('POST', 'api/voice-url', [
