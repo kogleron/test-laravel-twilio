@@ -13,18 +13,17 @@ class TwilioAppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
-        $token      = $_ENV['TWILIO_AUTH_TOKEN'];
-        $accountSid = $_ENV['TWILIO_ACCOUNT_SID'];
+        $token = $_ENV['TWILIO_AUTH_TOKEN'];
+        $sid   = $_ENV['TWILIO_ACCOUNT_SID'];
 
         $this->app->instance('Twilio',
-            new \Services_Twilio($accountSid, $token)
+            new \Services_Twilio($sid, $token)
         );
         $this->app->instance('TwilioLookups',
-            new\Lookups_Services_Twilio($_ENV['TWILIO_ACCOUNT_SID'], $_ENV['TWILIO_AUTH_TOKEN'])
+            new\Lookups_Services_Twilio($sid, $token)
         );
         $this->app->instance('TwilioPricing',
-            new \Pricing_Services_Twilio($_ENV['TWILIO_ACCOUNT_SID'], $_ENV['TWILIO_AUTH_TOKEN'])
+            new \Pricing_Services_Twilio($sid, $token)
         );
     }
 }
