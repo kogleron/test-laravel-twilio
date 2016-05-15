@@ -9,6 +9,11 @@ composer update
 ```bash
 cp .env.example .env
 ```
+
+```bash
+gulp
+```
+
 Fill in mysql database credentials in .env
 
 Fill in twilio credentials and other settings in .env
