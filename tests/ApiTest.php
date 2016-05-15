@@ -16,7 +16,6 @@ class ApiTest extends TestCase
 
     public function testVoiceUrl()
     {
-        \Illuminate\Support\Facades\DB::beginTransaction();
         $response = $this->call('POST', 'api/voice-url', [
             'CallSid'    => 'call-sid',
             'AccountSid' => 'account-sid',
@@ -26,13 +25,10 @@ class ApiTest extends TestCase
 
         $this->assertTrue($response->isOk());
         $this->assertTrue((bool)strpos($response->getContent(), env('TWILIO_DIAL_NUMBER')));
-
-        \Illuminate\Support\Facades\DB::rollback();
     }
 
     public function testStatusCallback()
     {
-        \Illuminate\Support\Facades\DB::beginTransaction();
         $call              = new \App\CallsLog();
         $call->call_sid    = 'call-sid';
         $call->account_sid = 'account-sid';
@@ -46,13 +42,10 @@ class ApiTest extends TestCase
         ]);
 
         $this->assertTrue($response->isOk());
-
-        \Illuminate\Support\Facades\DB::rollback();
     }
 
     public function testSmsUrl()
     {
-        \Illuminate\Support\Facades\DB::beginTransaction();
         $response = $this->call('POST', 'api/sms-url', [
             'MessageSid' => 'MessageSid',
             'AccountSid' => 'AccountSid',
@@ -62,7 +55,5 @@ class ApiTest extends TestCase
         ]);
 
         $this->assertTrue($response->isOk());
-
-        \Illuminate\Support\Facades\DB::rollback();
     }
 }
