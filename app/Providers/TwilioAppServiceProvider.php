@@ -25,5 +25,8 @@ class TwilioAppServiceProvider extends ServiceProvider
         $this->app->instance('TwilioPricing',
             new \Pricing_Services_Twilio($sid, $token)
         );
+        $this->app->instance('TwilioTwiml',
+            new \Services_Twilio_Twiml()
+        );
     }
 }

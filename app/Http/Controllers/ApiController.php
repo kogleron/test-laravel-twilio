@@ -19,7 +19,8 @@ class ApiController extends BaseController
         $call->created     = date('Y-m-d H:i:s');
         $call->save();
 
-        $responseTwilio = new \Services_Twilio_Twiml();
+        /** @var \Services_Twilio_Twiml $responseTwilio */
+        $responseTwilio = \App::make('TwilioTwiml');
         $responseTwilio->dial(env('TWILIO_DIAL_NUMBER'), ['callerId' => $call->from]);
 
         $response = response()->make($responseTwilio);
@@ -48,7 +49,8 @@ class ApiController extends BaseController
         $message->body        = Input::get('Body');
         $message->save();
 
-        $responseTwilio = new \Services_Twilio_Twiml();
+        /** @var \Services_Twilio_Twiml $responseTwilio */
+        $responseTwilio = \App::make('TwilioTwiml');
         $response       = response()->make($responseTwilio);
 
         $response->header('Content-Type', 'text/xml');
@@ -64,6 +66,9 @@ class ApiController extends BaseController
      */
     public function getPhone($country)
     {
+        /** @var \Services_Twilio $twilio */
+        /** @var \Lookups_Services_Twilio $lookups */
+
         $country = strtolower($country);
         $twilio  = \App::make('Twilio');
         $lookups = \App::make('TwilioLookups');
@@ -108,6 +113,8 @@ class ApiController extends BaseController
 
     public function getCountries()
     {
+        /** @var \Services_Twilio $twilio */
+        /** @var \Pricing_Services_Twilio $pricing */
         $twilio    = \App::make('Twilio');
         $pricing   = \App::make('TwilioPricing');
         $countries = [];
