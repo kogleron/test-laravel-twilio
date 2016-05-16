@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\CallsLog;
 use App\MessagesLog;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Input;
 
 class ApiController extends BaseController
 {
-    public function postVoiceUrl()
+    public function postVoiceUrl(Request $request)
     {
         $call              = new CallsLog();
-        $call->call_sid    = Input::get('CallSid');
-        $call->account_sid = Input::get('AccountSid');
-        $call->from        = Input::get('From');
-        $call->to          = Input::get('To');
+        $call->call_sid    = $request->get('CallSid');
+        $call->account_sid = $request->get('AccountSid');
+        $call->from        = $request->get('From');
+        $call->to          = $request->get('To');
         $call->created     = date('Y-m-d H:i:s');
         $call->save();
 
@@ -30,23 +30,23 @@ class ApiController extends BaseController
         return $response;
     }
 
-    public function postStatusCallback()
+    public function postStatusCallback(Request $request)
     {
         /** @var CallsLog $call */
-        $call           = CallsLog::where('call_sid', Input::get('CallSid'))->firstOrFail();
-        $call->duration = Input::get('CallDuration');
+        $call           = CallsLog::where('call_sid', $request->get('CallSid'))->firstOrFail();
+        $call->duration = $request->get('CallDuration');
         $call->save();
     }
 
-    public function postSmsUrl()
+    public function postSmsUrl(Request $request)
     {
         $message              = new MessagesLog();
         $message->created     = date('Y-m-d H:i:s');
-        $message->message_sid = Input::get('MessageSid');
-        $message->account_sid = Input::get('AccountSid');
-        $message->from        = Input::get('From');
-        $message->to          = Input::get('To');
-        $message->body        = Input::get('Body');
+        $message->message_sid = $request->get('MessageSid');
+        $message->account_sid = $request->get('AccountSid');
+        $message->from        = $request->get('From');
+        $message->to          = $request->get('To');
+        $message->body        = $request->get('Body');
         $message->save();
 
         /** @var \Services_Twilio_Twiml $responseTwilio */
