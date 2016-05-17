@@ -133,7 +133,7 @@ class ApiController extends BaseController
 
         while (!empty($countries) && count($result) < env('TWILIO_COUNTRIES_NUM', 3)) {
 
-            $country = array_splice($countries, rand(0, count($countries)), 1)[0];
+            $country = array_splice($countries, rand(0, count($countries) - 1), 1)[0];
 
             try {
                 $numbers = $twilio
