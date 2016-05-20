@@ -7,10 +7,13 @@ use Illuminate\Support\ServiceProvider;
 class TwilioAppServiceProvider extends ServiceProvider
 {
     /**
+     * @param string $baseUri
+     * @param string $userAgent
+     *
      * @return \Services_Twilio_HttpStream|\Services_Twilio_TinyHttp
      * @throws \Services_Twilio_HttpException
      */
-    protected function getHttpClient($baseUri)
+    protected function getHttpClient($baseUri, $userAgent)
     {
         if (!in_array('openssl', get_loaded_extensions())) {
             throw new \Services_Twilio_HttpException("The OpenSSL extension is required but not currently enabled. " .
@@ -22,7 +25,7 @@ class TwilioAppServiceProvider extends ServiceProvider
                 [
                     "curlopts" => [
                         CURLOPT_SSL_VERIFYPEER => false,
-                        CURLOPT_USERAGENT      => \Base_Services_Twilio::USER_AGENT . ' (php ' . phpversion() . ')',
+                        CURLOPT_USERAGENT      => $userAgent,
                         CURLOPT_HTTPHEADER     => ['Accept-Charset: utf-8'],
                     ],
                 ]
@@ -33,7 +36,7 @@ class TwilioAppServiceProvider extends ServiceProvider
                 [
                     "http_options" => [
                         "http" => [
-                            "user_agent" => \Base_Services_Twilio::USER_AGENT . ' (php ' . phpversion() . ')',
+                            "user_agent" => $userAgent,
                             "header"     => "Accept-Charset: utf-8\r\n",
                         ],
                         "ssl"  => [
@@ -60,15 +63,18 @@ class TwilioAppServiceProvider extends ServiceProvider
 
         $this->app->instance('Twilio',
             new \Services_Twilio($sid, $token, null,
-                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://api.twilio.com'))
+                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://api.twilio.com',
+                    \Services_Twilio::qualifiedUserAgent(phpversion())))
         );
         $this->app->instance('TwilioLookups',
-            new\Lookups_Services_Twilio($sid, $token, null,
-                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://lookups.twilio.com'))
+            new \Lookups_Services_Twilio($sid, $token, null,
+                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://lookups.twilio.com',
+                    \Lookups_Services_Twilio::qualifiedUserAgent(phpversion())))
         );
         $this->app->instance('TwilioPricing',
             new \Pricing_Services_Twilio($sid, $token, null,
-                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://pricing.twilio.com'))
+                env('TWILIO_SSL_VERIFY_PEER', 0) ? null : $this->getHttpClient('https://pricing.twilio.com',
+                    \Pricing_Services_Twilio::qualifiedUserAgent(phpversion())))
         );
         $this->app->instance('TwilioTwiml',
             new \Services_Twilio_Twiml()

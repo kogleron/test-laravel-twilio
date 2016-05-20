@@ -10,17 +10,14 @@ class PageTest extends TestCase
         $mockLookupPhoneNumber               = Mockery::mock();
         $mockLookupPhoneNumber->country_code = 'us';
 
-        $mockTwilioService                                  = Mockery::mock();
+        $mockTwilioService                                  = Twilio::getFacadeRoot();
         $mockTwilioService->account                         = Mockery::mock();
         $mockTwilioService->account->incoming_phone_numbers = [$mockPhoneNumber];
 
-        $mockTwilioLookupsService                = Mockery::mock();
+        $mockTwilioLookupsService                = TwilioLookups::getFacadeRoot();
         $mockTwilioLookupsService->phone_numbers = Mockery::mock();
         $mockTwilioLookupsService->phone_numbers->shouldReceive('get')
             ->andReturn($mockLookupPhoneNumber);
-
-        App::instance('Twilio', $mockTwilioService);
-        App::instance('TwilioLookups', $mockTwilioLookupsService);
 
         /**
          * Existing number
@@ -52,7 +49,7 @@ class PageTest extends TestCase
 
     protected function getCountries()
     {
-        $mockTwilioService = Mockery::mock();
+        $mockTwilioService = Twilio::getFacadeRoot();
 
         $mockAvailablePhoneNumbers                          = Mockery::mock();
         $mockAvailablePhoneNumbers->available_phone_numbers = [1];
@@ -61,7 +58,7 @@ class PageTest extends TestCase
         $mockTwilioService->account->available_phone_numbers = Mockery::mock();
         $mockTwilioService->account->available_phone_numbers->shouldReceive('getList')->andReturn($mockAvailablePhoneNumbers);
 
-        $mockTwilioPricingService = Mockery::mock();
+        $mockTwilioPricingService = TwilioPricing::getFacadeRoot();
 
         $mockCountryGB              = Mockery::mock();
         $mockCountryGB->iso_country = 'gb';
@@ -73,9 +70,6 @@ class PageTest extends TestCase
             $mockCountryGB,
             $mockCountryCA
         ];
-
-        App::instance('Twilio', $mockTwilioService);
-        App::instance('TwilioPricing', $mockTwilioPricingService);
 
         $response = $this->call('GET', 'api/countries');
 
